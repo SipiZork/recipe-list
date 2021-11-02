@@ -45,14 +45,37 @@ export const addRecipeToDb = async (name, pieces, steps) => {
 
 export const getShopListFromUser = async (id) => {
   let shoplist = null;
+  let mainShoplist = null;
+  let returnValues = {
+    shoplist: null,
+    mainShoplist: null,
+  };
   try {
     const querySnapshot = await getDoc(doc(db, 'users', 'ri74WwG1zBxZwnjEJvbG'));
     shoplist = querySnapshot.data().shoplist;
+    mainShoplist = querySnapshot.data().mainShoplist;
   } catch (e) {
     console.error(e);
   }
-  if (shoplist.length > 0 && shoplist[0] !== "") {
-    return shoplist;
+  if (shoplist.length > 0) {
+    returnValues.shoplist = shoplist;
+  }
+  if (mainShoplist.length > 0) {
+    returnValues.mainShoplist = mainShoplist;
+  }
+  return returnValues;
+}
+
+export const getMainShopListFromUser = async (id) => {
+  let mainShoplist = null;
+  try {
+    const querySnapshot = await getDoc(doc(db, 'users', 'ri74WwG1zBxZwnjEJvbG'));
+    mainShoplist = querySnapshot.data().mainShoplist;
+  } catch (e) {
+    console.error(e);
+  }
+  if (mainShoplist.length > 0 && mainShoplist[0] !== "") {
+    return mainShoplist;
   } else {
     return null;
   }
@@ -69,6 +92,23 @@ export const changeDone = async (i, name) => {
   });
   /*shoplist[i].pieces[x].done = !shoplist[i].pieces[x].done;*/
   updateDoc(shoplistRef, {shoplist});
+}
+
+export const changeDoneInMainlist = async (name) => {
+  const querySnapshot = await getDoc(doc(db, 'users', 'ri74WwG1zBxZwnjEJvbG'));
+  const shoplistRef = doc(db, 'users', 'ri74WwG1zBxZwnjEJvbG');
+  let { mainShoplist } = querySnapshot.data();
+  mainShoplist.map(piece => {
+    if (piece.name === name) {
+      piece.done = !piece.done;
+    }
+  });
+  updateDoc(shoplistRef, {mainShoplist});
+}
+
+export const deleteItemFromMainlist = async (newList) => {
+  const shoplistRef = doc(db, 'users', 'ri74WwG1zBxZwnjEJvbG');
+  updateDoc(shoplistRef, {mainShoplist: newList});
 }
 
 export const deleteRecipeFromShoplist = async (id) => {
@@ -99,6 +139,14 @@ export const giveToShopList = async (pieces, recipeId, recipeName, dose) => {
     shoplist.push({ recipeId, recipeName, dose, pieces: newPieces})
   }
   updateDoc(shoplistRef, {shoplist});
+}
+
+export const giveToMainShoplist = async (piece) => {
+  const querySnapshot = await getDoc(doc(db, 'users', 'ri74WwG1zBxZwnjEJvbG'));
+  const shoplistRef = doc(db, 'users', 'ri74WwG1zBxZwnjEJvbG');
+  let { mainShoplist } = querySnapshot.data();
+  mainShoplist.push({name: piece, done: false});
+  updateDoc(shoplistRef, { mainShoplist });
 }
 
 export const db = getFirestore();

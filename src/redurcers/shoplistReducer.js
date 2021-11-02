@@ -4,6 +4,7 @@ import {
 
 const initialState = {
   shoplist: null,
+  mainShoplist: null,
   isLoading: true,
 };
 
@@ -13,7 +14,8 @@ const shoplistReducer = (state = initialState, action) => {
     case FETCH_SHOPLIST:
       return {
         ...state,
-        shoplist: payload,
+        shoplist: payload.shoplist,
+        mainShoplist: payload.mainShoplist,
         isLoading: false,
       }
     default:

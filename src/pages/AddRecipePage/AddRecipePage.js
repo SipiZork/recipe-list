@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import Button from '../../components/Button/Button';
 import Steps from '../../components/Steps/Steps';
+import Input from '../../components/Input/Input';
 import { addRecipeToDb } from '../../firebase/firebase';
 import { getAllRecipes } from '../../actions/recipeAction';
 import { orangeColorPalette } from '../../styles/colors';
@@ -11,7 +12,7 @@ const AddRecipePage = () => {
 
   const dispatch = useDispatch();
 
-  const ElementUseRef = useRef();
+  const ElementUseRef = useRef(null);
   const [recipeElements, setRecipeElements] = useState([]);
   const [recipeName, setRecipeName] = useState('');
   const [addElement, setAddElement] = useState({
@@ -91,10 +92,9 @@ const AddRecipePage = () => {
 
   return (
     <StyledAddRecipe>
-      <div className="input-group">
-        <input type="text" name="recipeName" value={recipeName} onChange={(e) => changeRecipeName(e)} required autoComplete="off" />
-        <p>Étel neve</p>
-      </div>
+      <Input type="text" name="recipeName" value={recipeName} onChange={(e) => changeRecipeName(e)} required autoComplete="off">
+        Étel neve
+      </Input>
       <ul className="element-list">
         <p>Hozzávalók:</p>
         {recipeElements.map((element, i) => (
@@ -106,27 +106,25 @@ const AddRecipePage = () => {
         ))}
       </ul>
       <form className="form-group">
-        <div className="input-group">
-          <input type="text" name="quantity" ref={ElementUseRef} onChange={(e) => changeElementSettings(e)} value={addElement.quantity} required autoComplete="off" />
-          <p>Alapanyag egység</p>
-        </div>
-        <div className="input-group">
-          <input type="text" name="unit" onChange={(e) => changeElementSettings(e)} value={addElement.unit} required autoComplete="off" />
-          <p>Alapanyag Mértékegység</p>
-        </div>      
-        <div className="input-group">
-          <input type="text" name="name" onChange={(e) => changeElementSettings(e)} value={addElement.name} required autoComplete="off" onKeyDown={(e) => onKeyDown(e)} />
-          <p>Alapanyag neve</p>
-        </div>
+        
+        <Input type="text" name="quantity" ElementUseRef={ElementUseRef} onChange={(e) => changeElementSettings(e)} value={addElement.quantity} required autoComplete="off">
+          Alapanyag egység
+        </Input>
+        <Input type="text" name="unit" onChange={(e) => changeElementSettings(e)} value={addElement.unit} required autoComplete="off">
+          Alapanyag Mértékegység
+        </Input>      
+        <Input type="text" name="name" onChange={(e) => changeElementSettings(e)} value={addElement.name} onKeyDown={(e) => onKeyDown(e)} required autoComplete="off">
+          Alapanyag neve
+        </Input>
       </form>
       <Button type="submit" onClick={(e) => addElementToRecipe(e)}>Hozzávaló hozzáadása</Button>
       <p>Elkészítés</p>
       {steps.length > 0 &&
         <Steps steps={steps} removeFromSteps={removeFromSteps} editable />
       }
-      <div className="input-group">
-        <input type="text" className="addStep" value={addStep} onChange={(e) => setAddStep(e.target.value)} onKeyDown={(e) => onKeyDownOnSteps(e)} />
-        </div>
+      <Input type="text" className="addStep" value={addStep} onChange={(e) => setAddStep(e.target.value)} onKeyDown={(e) => onKeyDownOnSteps(e)} required autoComplete="off">
+        Lépés hozzáadása
+      </Input>
         <Button onClick={(e) => addToStep(e)}>Lépés hozzáadása</Button>
       <Button onClick={() => addRecipe()}>Recept hozzáadása</Button>
     </StyledAddRecipe>

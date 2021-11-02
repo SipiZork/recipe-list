@@ -1,7 +1,7 @@
 import {
   FETCH_SHOPLIST
 } from './types';
-import { getShopListFromUser } from '../firebase/firebase';
+import { getShopListFromUser, getMainShopListFromUser } from '../firebase/firebase';
 
 export const getShoplist = (id) => async dispatch => {
   try {
@@ -12,4 +12,4 @@ export const getShoplist = (id) => async dispatch => {
   } catch (e) {
     console.error(e);
   }
-}
+};

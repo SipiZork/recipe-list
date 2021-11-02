@@ -1,12 +1,30 @@
+import { useState, useRef } from 'react';
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { orangeColorPalette } from "../../styles/colors";
-import { changeDone, deleteRecipeFromShoplist } from "../../firebase/firebase";
+import Input from "../../components/Input/Input";
+import Button from '../../components/Button/Button';
+import { changeDone, deleteRecipeFromShoplist, giveToMainShoplist, changeDoneInMainlist, deleteItemFromMainlist } from "../../firebase/firebase";
 
 const Shoplist = () => {
 
-  const { shoplist } = useSelector(state => state.shoplist);
+  const ElementUseRef = useRef(null);
+  const [piece, setPiece] = useState('');
+
+  const addToMainList = (e, button = false) => {
+    if (e.keyCode === 13 || button && e.target.value !== '') {
+      giveToMainShoplist(piece);
+      setPiece('');
+      ElementUseRef.current.focus();
+    }
+  }
+
+  const filterIt = (name) => {
+    deleteItemFromMainlist(mainShoplist.filter(piece => piece.name !== name));
+  }
+
+  const { shoplist, mainShoplist } = useSelector(state => state.shoplist);
   return (
     <StyledShoplist>
       <h3>Bevásárló lista</h3>
@@ -28,7 +46,30 @@ const Shoplist = () => {
           </ul>
         </div>
       )) :
-    <p>A bevásárló lista üres</p>}
+      <p>A receptes bevásárló lista üres</p>}
+      <div className="main-shoplist">
+        <h5 className="name">Recept nélküli beáváslólista</h5>
+        {mainShoplist !== null && (
+          <ul className="peices">
+            {mainShoplist.filter(p => !p.done).map((piece, i) => (
+              <li className="piece undone" key={i} onClick={() => changeDoneInMainlist(piece.name)}>
+                {piece.name}
+                <p className="close" onClick={() => filterIt(piece.name) }>X</p>
+              </li>
+            ))}
+            {mainShoplist.filter(p => p.done).map((piece, i) => (
+              <li className="piece done" key={i} onClick={() => changeDoneInMainlist(piece.name)}>
+                {piece.name}
+                <p className="close" onClick={() => filterIt(piece.name) }>X</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+        <Input type="text" name="piece" value={piece} ElementUseRef={ElementUseRef} required autocomplete="off" onChange={(e) => setPiece(e.target.value)} onKeyDown={(e) => addToMainList(e)}>
+          Lista elem
+        </Input>
+      <Button onClick={(e) => addToMainList(e, true)}>Elem hozzáadása a listához</Button>
     </StyledShoplist>
   )
 }
@@ -37,7 +78,7 @@ const StyledShoplist = styled.div`
   width: 80vw;
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: 1rem;
 
   h3 {
     text-align: center;
@@ -47,7 +88,7 @@ const StyledShoplist = styled.div`
   .name {
     font-size: 1.4rem;
     width: 100%;
-    padding: .5rem;
+    padding: 1rem 3rem 1rem 1rem;
     background-color: ${orangeColorPalette.peach};
     position: relative;
 
@@ -85,6 +126,7 @@ const StyledShoplist = styled.div`
       padding: 1rem;
       font-size: 1.1rem;
       user-select: none;
+      position: relative;
       &:nth-child(even) {
         background-color: ${orangeColorPalette.pastelOrange};
       }
@@ -93,6 +135,21 @@ const StyledShoplist = styled.div`
       }
       &.done {
         background-color: rgba(0,170,0,.6);
+      }
+      .close {
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-size: 1.5rem;
+        width: 3rem;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        cursor: pointer;
+        &:hover {
+          color: red;
+        }
       }
     }
   }
