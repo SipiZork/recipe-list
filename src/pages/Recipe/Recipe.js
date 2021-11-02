@@ -5,20 +5,21 @@ import { useParams } from 'react-router-dom';
 import { GetARecipe } from '../../actions/recipeAction';
 import { orangeColorPalette } from "../../styles/colors";
 import Button from "../../components/Button/Button";
+import Steps from '../../components/Steps/Steps';
 import { giveToShopList } from '../../firebase/firebase';
 
 const Recipe = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { actualRecipe } = useSelector(state => state.recipe);
-  const [dose, setDose] = useState(1);
+  const [dose, setDose] = useState(4);
 
   const incrementDose = () => {
     setDose(dose => dose+1);
   }
 
   const decrementDose = () => {
-    if (dose > 1) {
+    if (dose > 4) {
       setDose(dose => dose - 1);
     }
   }
@@ -47,11 +48,12 @@ const Recipe = () => {
               <h4>Hozzávalók</h4>
               <ul>
                 {actualRecipe.data.pieces.map((element, i) => (
-                  <li key={i}>{`${element.quantity * dose} ${element.unit} ${element.name}`}</li>
+                  <li key={i}>{`${element.quantity * (dose / 4)} ${element.unit} ${element.name}`}</li>
                 ))}
               </ul>
             </div>
           </div>
+          <Steps steps={actualRecipe.data.steps} />
           <div className="buttons">
             <Button onClick={giveToShopListAll}>Hozzáadás a bevásárlólistához</Button>
           </div>
@@ -70,7 +72,6 @@ const StyledRecipe = styled.div`
   .recipe {
     width: 80vw;
     min-width: 300px;
-    border: 1px solid brown;
     min-height: 200px;
     display: flex;
     flex-direction: column;

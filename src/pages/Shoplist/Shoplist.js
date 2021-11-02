@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { orangeColorPalette } from "../../styles/colors";
@@ -6,14 +7,15 @@ import { changeDone, deleteRecipeFromShoplist } from "../../firebase/firebase";
 const Shoplist = () => {
 
   const { shoplist } = useSelector(state => state.shoplist);
-  console.log(shoplist);
   return (
     <StyledShoplist>
       <h3>Bevásárló lista</h3>
       {shoplist !== null ? shoplist.map((recipe, i) => (
         <div className="recipe" key={i}>
           <h5 className="name">
-            <p>{recipe.recipeName} - {recipe.dose} adag</p>
+            <Link to={`recipe/${recipe.recipeId}`}>
+              <p>{recipe.recipeName.toUpperCase()} - {recipe.dose} adag</p>
+            </Link>
             <div className="close" onClick={() => deleteRecipeFromShoplist(recipe.recipeId)}>X</div>
           </h5>
           <ul className="peices">
@@ -48,6 +50,15 @@ const StyledShoplist = styled.div`
     padding: .5rem;
     background-color: ${orangeColorPalette.peach};
     position: relative;
+
+    a {
+      text-decoration: none;
+      color: black;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
     
     .close {
       position: absolute;
@@ -73,6 +84,7 @@ const StyledShoplist = styled.div`
       list-style: none;
       padding: 1rem;
       font-size: 1.1rem;
+      user-select: none;
       &:nth-child(even) {
         background-color: ${orangeColorPalette.pastelOrange};
       }

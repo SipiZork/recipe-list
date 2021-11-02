@@ -30,7 +30,6 @@ export const getAllRecipesFromDb = async () => {
 export const getARecipeFromDb = async (id) => {
   let recipe = null;
   try {
-    console.log(id);
     const querySnapshot = await getDoc(doc(db, 'recipes', id));
     recipe = { data: querySnapshot.data(), id: id };
   } catch (e) {
@@ -39,9 +38,9 @@ export const getARecipeFromDb = async (id) => {
   return recipe;
 }
 
-export const addRecipeToDb = async (name, pieces) => {
+export const addRecipeToDb = async (name, pieces, steps) => {
   const newRecipeRef = doc(collection(db, 'recipes'));
-  await setDoc(newRecipeRef, { name, pieces });
+  await setDoc(newRecipeRef, { name, pieces, steps });
 }
 
 export const getShopListFromUser = async (id) => {
@@ -64,8 +63,6 @@ export const changeDone = async (i, name) => {
   const shoplistRef = doc(db, 'users', 'ri74WwG1zBxZwnjEJvbG');
   let { shoplist } = querySnapshot.data();
   shoplist[i].pieces.map(piece => {
-    console.log('pname',piece.name);
-    console.log('name', name);
     if (piece.name === name) {
       piece.done = !piece.done;
     }
@@ -75,7 +72,6 @@ export const changeDone = async (i, name) => {
 }
 
 export const deleteRecipeFromShoplist = async (id) => {
-  console.log(id);
   const querySnapshot = await getDoc(doc(db, 'users', 'ri74WwG1zBxZwnjEJvbG'));
   const shoplistRef = doc(db, 'users', 'ri74WwG1zBxZwnjEJvbG');
   let { shoplist } = querySnapshot.data();
@@ -89,7 +85,7 @@ export const giveToShopList = async (pieces, recipeId, recipeName, dose) => {
   let newPieces = [];
   pieces.map(element => {
     newPieces.push({
-      name: ` ${element.quantity * dose} ${element.unit} ${element.name}`,
+      name: ` ${element.quantity * (dose / 4)} ${element.unit} ${element.name}`,
       done: false
     })
   })

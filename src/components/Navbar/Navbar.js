@@ -17,7 +17,6 @@ const Navbar = () => {
     setPiecesNumber(piecesNumber + 1);
   }
   
-  console.log(shoplist);
   useEffect(() => {
     onSnapshot(doc(db, 'users', 'ri74WwG1zBxZwnjEJvbG'), (snapshot) => {
       dispatch(getShoplist('a'));
@@ -30,7 +29,7 @@ const Navbar = () => {
       </Link>
       <Button onClick={giveNumber}>
         <Link to='/shoplist' className='shoplist'>
-          <i class="fas fa-shopping-basket"></i>
+          <i className="fas fa-shopping-basket"></i>
           <p>Hiányos receptek: {shoplist !== null ? shoplist.filter(recipe => recipe.pieces.some(piece => !piece.done)).length : 0}</p>
         </Link>
       </Button>
