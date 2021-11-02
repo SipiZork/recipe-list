@@ -27,7 +27,7 @@ const AddRecipePage = () => {
       ...addElement,
       [e.target.name]: e.target.value
     });
-  }
+  };
 
   const addElementToRecipe = (e) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ const AddRecipePage = () => {
       setAddElementSettingsToZero();
       ElementUseRef.current.focus();
     }
-  }
+  };
 
   const setAddElementSettingsToZero = () => {
     setAddElement({
@@ -45,30 +45,48 @@ const AddRecipePage = () => {
       unit: '',
       quantity: ''
     });
-  }
+  };
 
   const changeRecipeName = (e) => {
     setRecipeName(e.target.value);
-  }
+  };
 
   const addRecipe = () => {
     if (recipeName !== '' && recipeElements.length > 0 && steps.length > 0) {
       addRecipeToDb(recipeName, recipeElements, steps);
       dispatch(getAllRecipes());
     }
-  }
+  };
 
   const addToStep = (e) => {
     setSteps(
       [...steps, addStep]
     );
     setAddStep('');
-  }
+  };
 
   const onKeyDown = (e) => {
     if (e.keyCode === 13) {
       addElementToRecipe(e);
     }
+  };
+
+  const onKeyDownOnSteps = (e) => {
+    if (e.keyCode === 13) {
+      addToStep(e);
+    }
+  };
+
+  const removeFromSteps = (step) => {
+    setSteps(
+      steps.filter(s => s !== step)
+    );
+  }
+
+  const removeFromElements = (name) => {
+    setRecipeElements(
+      recipeElements.filter(element => element.name !== name)
+    );
   }
 
   return (
@@ -81,8 +99,9 @@ const AddRecipePage = () => {
         <p>Hozzávalók:</p>
         {recipeElements.map((element, i) => (
           <li key={i}>
-            <p>{element.name}</p>
             <p>{`${element.quantity} ${element.unit}`}</p>
+            <p>{element.name}</p>
+            <div className="close" onClick={() => removeFromElements(element.name)}>X</div>
           </li>
         ))}
       </ul>
@@ -102,11 +121,13 @@ const AddRecipePage = () => {
       </form>
       <Button type="submit" onClick={(e) => addElementToRecipe(e)}>Hozzávaló hozzáadása</Button>
       <p>Elkészítés</p>
-      <Steps steps={steps} />
+      {steps.length > 0 &&
+        <Steps steps={steps} removeFromSteps={removeFromSteps} editable />
+      }
       <div className="input-group">
-        <input type="text" className="addStep" value={addStep} onChange={(e) => setAddStep(e.target.value)}/>
+        <input type="text" className="addStep" value={addStep} onChange={(e) => setAddStep(e.target.value)} onKeyDown={(e) => onKeyDownOnSteps(e)} />
         </div>
-        <Button onClick={(e) => addToStep(e)} >Lépés hozzáadása</Button>
+        <Button onClick={(e) => addToStep(e)}>Lépés hozzáadása</Button>
       <Button onClick={() => addRecipe()}>Recept hozzáadása</Button>
     </StyledAddRecipe>
   )
@@ -121,8 +142,35 @@ const StyledAddRecipe = styled.div`
     width: 100%;
     li {
       display: flex;
-      gap: 1rem;
-      font-size: 1.2rem;
+      gap: .25rem;
+      padding: 1rem;
+      font-size: 1.1rem;
+      list-style: none;
+      user-select: none;
+      transition: .25s all;
+      position: relative;
+      &:nth-child(even) {
+        background-color: ${orangeColorPalette.pastelOrange};
+      }
+      &:nth-child(odd) {
+        background-color: ${orangeColorPalette.brightOramge};
+      }
+      .close {
+      width: 4rem;
+      height: 100%;
+      position: absolute;
+      right: 0;
+      top: 0;
+      font-size: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+
+        &:hover {
+          color: red;
+        }
+      }
     }
   }
 

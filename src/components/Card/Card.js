@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { orangeColorPalette } from '../../styles/colors';
 
-const Card = ({ recipe, id}) => {
+const Card = ({ recipe, id }) => {
   return (
     <StyledCard to={`recipe/${id}`} className="name">
       <div className="name">{recipe.name}</div>
