@@ -31,14 +31,14 @@ const StyledSteps = styled.ul`
     transition: .25s all;
     position: relative;
     &:nth-child(even) {
-      background-color: ${orangeColorPalette.pastelOrange};
+      background-color: ${orangeColorPalette.lightBg};
     }
     &:nth-child(odd) {
-      background-color: ${orangeColorPalette.brightOramge};
+      background-color: ${orangeColorPalette.otherLightBg};
     }
     &:hover,
     &.active {
-      background-color: ${orangeColorPalette.neonOrange};
+      background-color: ${orangeColorPalette.darkBg};
       color: white;
       padding: 1rem 1.25rem;
     }

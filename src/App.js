@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import GlobalStyle from './components/GlobalStyle';
 import HomePage from './pages/HomePage/HomePage';
 import AddRecipePage from './pages/AddRecipePage/AddRecipePage';
@@ -12,10 +12,16 @@ import ToolTip from './components/ToolTip/ToolTip';
 import { getAllRecipes } from './actions/recipeAction';
 import { orangeColorPalette } from './styles/colors';
 import styled from 'styled-components';
+import SignInSignUp from './pages/SignInSignUp/SignInSignUp';
+import { createUserProfileDocument } from './firebase/firebase';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { setCurrentUser } from './actions/userAction';
+import { onSnapshot } from 'firebase/firestore';
 
 const App = () => {
   const dispatch = useDispatch();
-
+  const history = useHistory();
+  const { isLoggedIn } = useSelector(state => state.user);
   const [tooltipSettings, setTooltipSettings] = useState({
     top: 0,
     left: 0,
@@ -32,21 +38,38 @@ const App = () => {
     });
   }
 
-  useEffect(() => {
+  useEffect(async () => {
     dispatch(getAllRecipes());
+    (async () => {
+      const auth = getAuth();
+        onAuthStateChanged(auth, user => {
+          if (user) {
+            const { currentUser } = auth;
+            dispatch(setCurrentUser(currentUser));
+            history.push('/');
+          } else {
+            dispatch(setCurrentUser(null));
+          }
+        })
+      })()
   }, [dispatch]);
 
   return (
     <StyledContent>
       <GlobalStyle />
       <Navbar />
-      <Link to='/add-recipe' className="add-recipe-button" onMouseEnter={(e) => changeSettings(e)} onMouseLeave={() => setTooltipSettings({ ...tooltipSettings, show: false })}>
-        <button>+</button>
-      </Link>
+      {isLoggedIn &&
+        <Link to='/add-recipe' className="add-recipe-button" onMouseEnter={(e) => changeSettings(e)} onMouseLeave={() => setTooltipSettings({ ...tooltipSettings, show: false })}>
+          <button>+</button>
+        </Link>
+      }
       <ToolTip text="Recept hozzáadása" tooltipSettings={tooltipSettings} />
       <Switch>
         <Route exact path="/">
           <HomePage />
+        </Route>
+        <Route exact path="/signinsignup">
+          <SignInSignUp />
         </Route>
         <Route path="/add-recipe">
           <AddRecipePage />
@@ -84,12 +107,12 @@ const StyledContent = styled.div`
       outline: none;
       border: none;
       transition: all .25s;
-      background-color: ${orangeColorPalette.mango};
+      background-color: ${orangeColorPalette.lightBg};
 
       cursor: pointer;
       
       &:hover {
-        background-color: ${orangeColorPalette.coral};
+        background-color: ${orangeColorPalette.darkBg};
       }
     }
   }

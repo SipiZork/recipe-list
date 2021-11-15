@@ -14,7 +14,7 @@ const HomePage = () => {
   return (
     <StyledHomePage>
       <div className="search">
-        <i class="fas fa-search"></i>
+        <i className="fas fa-search"></i>
         <input type="text" name="search-field" value={searchfield} onChange={(e) => setSearhfield(e.target.value)} autoComplete="off" />
       </div>
       <Recipes searchfield={searchfield} />
@@ -47,11 +47,11 @@ const StyledHomePage = styled.div`
       font-size: 1.5rem;
       outline: none;
       border: none;
-      border: 1px solid ${orangeColorPalette.brightOramge};
+      border: 1px solid ${orangeColorPalette.lightBg};
 
       &:hover,
       &:focus {
-        border: 2px solid ${orangeColorPalette.brightOramge};
+        border: 2px solid ${orangeColorPalette.darkBg};
       }
     }
   }

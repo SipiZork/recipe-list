@@ -12,19 +12,21 @@ const Shoplist = () => {
   const ElementUseRef = useRef(null);
   const [piece, setPiece] = useState('');
 
+  const { shoplist, mainShoplist } = useSelector(state => state.shoplist);
+  const { currentUser } = useSelector(state => state.user);
+  
   const addToMainList = (e, button = false) => {
-    if (e.keyCode === 13 || button && e.target.value !== '') {
-      giveToMainShoplist(piece);
+    if ((e.keyCode === 13 || button) && e.target.value !== '') {
+      giveToMainShoplist(piece, currentUser.uid);
       setPiece('');
       ElementUseRef.current.focus();
     }
   }
-
+  
   const filterIt = (name) => {
-    deleteItemFromMainlist(mainShoplist.filter(piece => piece.name !== name));
+    deleteItemFromMainlist(mainShoplist.filter(piece => piece.name !== name), currentUser.uid);
   }
 
-  const { shoplist, mainShoplist } = useSelector(state => state.shoplist);
   return (
     <StyledShoplist>
       <h3>Bevásárló lista</h3>
@@ -34,14 +36,14 @@ const Shoplist = () => {
             <Link to={`recipe/${recipe.recipeId}`}>
               <p>{recipe.recipeName.toUpperCase()} - {recipe.dose} adag</p>
             </Link>
-            <div className="close" onClick={() => deleteRecipeFromShoplist(recipe.recipeId)}>X</div>
+            <div className="close" onClick={() => deleteRecipeFromShoplist(recipe.recipeId, currentUser.uid)}>X</div>
           </h5>
           <ul className="peices">
             {recipe.pieces.filter(p => !p.done).map((piece, x) => (
-              <li className="piece undone" key={x} onClick={() => changeDone(i,piece.name)}>{piece.name}</li>
+              <li className="piece undone" key={x} onClick={() => changeDone(i,piece.name, currentUser.uid)}>{piece.name}</li>
             ))}
             {recipe.pieces.filter(p => p.done).map((piece, x) => (
-              <li className="piece done" key={x} onClick={() => changeDone(i,piece.name)}>{piece.name}</li>
+              <li className="piece done" key={x} onClick={() => changeDone(i,piece.name, currentUser.uid)}>{piece.name}</li>
             ))}
           </ul>
         </div>
@@ -52,13 +54,13 @@ const Shoplist = () => {
         {mainShoplist !== null && (
           <ul className="peices">
             {mainShoplist.filter(p => !p.done).map((piece, i) => (
-              <li className="piece undone" key={i} onClick={() => changeDoneInMainlist(piece.name)}>
+              <li className="piece undone" key={i} onClick={() => changeDoneInMainlist(piece.name, currentUser.uid)}>
                 {piece.name}
                 <p className="close" onClick={() => filterIt(piece.name) }>X</p>
               </li>
             ))}
             {mainShoplist.filter(p => p.done).map((piece, i) => (
-              <li className="piece done" key={i} onClick={() => changeDoneInMainlist(piece.name)}>
+              <li className="piece done" key={i} onClick={() => changeDoneInMainlist(piece.name, currentUser.uid)}>
                 {piece.name}
                 <p className="close" onClick={() => filterIt(piece.name) }>X</p>
               </li>
@@ -66,7 +68,7 @@ const Shoplist = () => {
           </ul>
         )}
       </div>
-        <Input type="text" name="piece" value={piece} ElementUseRef={ElementUseRef} required autocomplete="off" onChange={(e) => setPiece(e.target.value)} onKeyDown={(e) => addToMainList(e)}>
+        <Input type="text" name="piece" value={piece} ElementUseRef={ElementUseRef} required autoComplete="off" onChange={(e) => setPiece(e.target.value)} onKeyDown={(e) => addToMainList(e)}>
           Lista elem
         </Input>
       <Button onClick={(e) => addToMainList(e, true)}>Elem hozzáadása a listához</Button>
@@ -89,7 +91,7 @@ const StyledShoplist = styled.div`
     font-size: 1.4rem;
     width: 100%;
     padding: 1rem 3rem 1rem 1rem;
-    background-color: ${orangeColorPalette.peach};
+    background-color: ${orangeColorPalette.lightBg};
     position: relative;
 
     a {
@@ -128,10 +130,10 @@ const StyledShoplist = styled.div`
       user-select: none;
       position: relative;
       &:nth-child(even) {
-        background-color: ${orangeColorPalette.pastelOrange};
+        background-color: ${orangeColorPalette.lightBg};
       }
       &:nth-child(odd) {
-        background-color: ${orangeColorPalette.brightOramge};
+        background-color: ${orangeColorPalette.otherLightBg};
       }
       &.done {
         background-color: rgba(0,170,0,.6);

@@ -12,6 +12,7 @@ const Recipe = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { actualRecipe } = useSelector(state => state.recipe);
+  const { currentUser, isLoggedIn } = useSelector(state => state.user);
   const [dose, setDose] = useState(4);
 
   const incrementDose = () => {
@@ -30,7 +31,7 @@ const Recipe = () => {
 
   const giveToShopListAll = (e) => {
     e.preventDefault();
-    giveToShopList(actualRecipe.data.pieces, actualRecipe.id, actualRecipe.data.name, dose);
+    giveToShopList(actualRecipe.data.pieces, actualRecipe.id, actualRecipe.data.name, dose, currentUser.uid);
   }
 
   return (
@@ -54,8 +55,12 @@ const Recipe = () => {
             </div>
           </div>
           <Steps steps={actualRecipe.data.steps} />
-          <div className="buttons">
-            <Button onClick={giveToShopListAll}>Hozzáadás a bevásárlólistához</Button>
+            <div className="buttons">
+            {isLoggedIn ?
+              <Button onClick={giveToShopListAll}>Hozzáadás a bevásárlólistához</Button>
+              :
+              <p>A bevásárlólistához adáshoz jelentkezz be</p>
+            }
           </div>
         </div>
         )}
@@ -90,13 +95,11 @@ const StyledRecipe = styled.div`
         border:none;
         outline:none;
         transition: all .25s;
-        border: 1px solid ${orangeColorPalette.lightOrange};
         cursor: pointer;
-        background-color: ${orangeColorPalette.mango};
+        background-color: ${orangeColorPalette.pink};
 
         &:hover {
-          background-color: ${orangeColorPalette.coral};
-          background-color: ${orangeColorPalette.mahogany};
+          background-color: ${orangeColorPalette.darkBg};
           color: white;
         }
 
@@ -114,7 +117,7 @@ const StyledRecipe = styled.div`
         justify-content: center;
         width: 5rem;
         height: 2rem;
-        background-color: ${orangeColorPalette.lightOrange};
+        background-color: ${orangeColorPalette.lightBg};
       }
     }
     
@@ -125,7 +128,7 @@ const StyledRecipe = styled.div`
       height: 4rem;
       font-size: 1.7rem;
       text-transform: uppercase;
-      background-color: ${orangeColorPalette.lightOrange};
+      background-color: ${orangeColorPalette.lightBg};
     }
 
     .content {
@@ -137,7 +140,7 @@ const StyledRecipe = styled.div`
       ul {
         li {
           list-style: none;
-          padding-left: .5rem;
+          padding: .5rem;
         }
       }
     }

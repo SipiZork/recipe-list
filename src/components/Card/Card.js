@@ -24,18 +24,18 @@ const Card = ({ recipe, id }) => {
 const StyledCard = styled(Link)`
   width: 250px;
   min-height: 350px;
-  border: 1px solid ${orangeColorPalette.pastelOrange};
+  border: 1px solid ${orangeColorPalette.lightBg};
   transition: all .25s;
   cursor: pointer;
   text-decoration: none;
   color: black;
 
   &:hover {
-    box-shadow: 3px 3px 10px ${orangeColorPalette.pastelOrange};
-    border: 1px solid ${orangeColorPalette.pastelOrange};
-    background-color: ${orangeColorPalette.peach};
+    box-shadow: 3px 3px 10px ${orangeColorPalette.darkBg};
+    border: 1px solid ${orangeColorPalette.darkBg};
+    /*background-color: ${orangeColorPalette.orange};*/
     .name {
-      background-color: ${orangeColorPalette.coral};
+      background-color: ${orangeColorPalette.darkBg};
       color: white;
     }
   }
@@ -46,7 +46,7 @@ const StyledCard = styled(Link)`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: ${orangeColorPalette.mango};
+    background-color: ${orangeColorPalette.lightBg};
     color: black;
     text-decoration: none;
     text-transform: uppercase;

@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from '../../components/Button/Button';
 import Steps from '../../components/Steps/Steps';
@@ -11,8 +12,10 @@ import { orangeColorPalette } from '../../styles/colors';
 const AddRecipePage = () => {
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const ElementUseRef = useRef(null);
+  const { rank } = useSelector(state => state.user);
   const [recipeElements, setRecipeElements] = useState([]);
   const [recipeName, setRecipeName] = useState('');
   const [addElement, setAddElement] = useState({
@@ -53,9 +56,14 @@ const AddRecipePage = () => {
   };
 
   const addRecipe = () => {
-    if (recipeName !== '' && recipeElements.length > 0 && steps.length > 0) {
-      addRecipeToDb(recipeName, recipeElements, steps);
-      dispatch(getAllRecipes());
+    if (rank === 3) {
+      if (recipeName !== '' && recipeElements.length > 0 && steps.length > 0) {
+        addRecipeToDb(recipeName, recipeElements, steps);
+        dispatch(getAllRecipes());
+        history.push('/');
+      }
+    } else {
+      alert('Bocsi, demo felhasználóként nem tudsz hozzáadni receptet');
     }
   };
 
@@ -195,13 +203,13 @@ const StyledAddRecipe = styled.div`
       height: 100%;
       border: none;
       outline: none;
-      border: 1px solid ${orangeColorPalette.brightOramge};
+      border: 1px solid ${orangeColorPalette.lightBg};
       padding: 0 1rem;
 
       &:hover,
       &:focus,
       &:valid {
-        border: 2px solid ${orangeColorPalette.brightOramge};
+        border: 2px solid ${orangeColorPalette.darkBg};
 
         +p {
           top: -.65rem;
