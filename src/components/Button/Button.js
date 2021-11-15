@@ -3,7 +3,7 @@ import { orangeColorPalette } from "../../styles/colors";
 
 const Button = ({ children, onClick, ...props }) => {
   return (
-    <StyledButton onClick={(e) => onClick(e)} {...props}>
+    <StyledButton onClick={onClick ? (e) => onClick(e) : () => {return null}} {...props}>
       {children}
     </StyledButton>
   )
@@ -15,6 +15,7 @@ const StyledButton = styled.button`
   margin: 0 auto;
   padding: 1rem;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height:3rem;

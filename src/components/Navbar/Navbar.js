@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { orangeColorPalette } from '../../styles/colors';
@@ -11,14 +11,10 @@ import { getAuth, signOut } from 'firebase/auth';
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const [piecesNumber, setPiecesNumber] = useState(0);
+  const history = useHistory();
   const [profileMenu, setProfileMenu] = useState(false);
   const { currentUser, username, isLoggedIn } = useSelector(state => state.user);
   const { shoplist } = useSelector(state => state.shoplist);
-
-  const giveNumber = () => {
-    setPiecesNumber(piecesNumber + 1);
-  }
   
   useEffect(() => {
     if (currentUser !== null) {
@@ -53,11 +49,9 @@ const Navbar = () => {
           </div>
         }
         {isLoggedIn &&
-          <Button onClick={giveNumber}>
-            <Link to='/shoplist' className='shoplist'>
+          <Button onClick={() => history.push('/shoplist')}>
               <i className="fas fa-shopping-basket"></i>
               <p>Hiányos receptek: {shoplist !== null ? shoplist.filter(recipe => recipe.pieces.some(piece => !piece.done)).length : 0}</p>
-            </Link>
           </Button>
         }
       </div>
@@ -150,7 +144,7 @@ const StyledNavbar = styled.div`
     }
   }
 
-  .shoplist {
+  button {
     i {
       font-size: 1.8rem;
     }
