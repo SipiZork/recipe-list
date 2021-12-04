@@ -49,7 +49,7 @@ const Recipe = () => {
               <h4>Hozzávalók</h4>
               <ul>
                 {actualRecipe.data.pieces.map((element, i) => (
-                  <li key={i}>{`${element.quantity * (dose / 4)} ${element.unit} ${element.name}`}</li>
+                  <li key={i}>{`${element.quantity !== '0' ? element.quantity * (dose / 4) : ''} ${element.unit} ${element.name}`}</li>
                 ))}
               </ul>
             </div>

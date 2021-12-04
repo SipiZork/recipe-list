@@ -36,7 +36,9 @@ const AddRecipePage = () => {
   const addElementToRecipe = (e) => {
     e.preventDefault();
     const { name, unit, quantity } = addElement;
-    if (name !== '' && unit !== '' && quantity !== '') {
+    const quantityForDb = parseFloat(quantity);
+    console.log(quantityForDb);
+    if (name !== '' && unit !== '' && quantity !== '' && parseFloat(quantity)) {
       setRecipeElements([...recipeElements, { name, unit, quantity }]);
       setAddElementSettingsToZero();
       ElementUseRef.current.focus();
